@@ -1,5 +1,5 @@
-const express = require('express')
-const fs = require('fs')
+import  express  from 'express'
+import { readFileSync } from 'fs'
 
 const productos = []
 let iteradorItem = 0
@@ -11,7 +11,7 @@ function getRandomInt(min, max) {
 
 function readFile (file, productos) {
             try{
-                const consultar =  fs.readFileSync(file)
+                const consultar =  readFileSync(file)
                 const json = JSON.parse(consultar.toString('utf-8'));
                 productos.push(json, {cantItems: json.length})
                 
