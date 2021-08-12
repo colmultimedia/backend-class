@@ -24,28 +24,42 @@ productos.push(new Producto ("Zanahoria", 100, "/test2.jpg"))
 
 
 app.get("/api/productos/listar", (req, res) => {
-    if(productos.length == 0){
-        res.json({"error": "No hay productos guardados"})
-    }else {
-        res.json(productos)
+    try{
+        if(productos.length == 0){
+            res.status(404).json({"error": "No hay productos guardados"})
+        }else {
+            res.status(200).json(productos)
+        }
+    }catch(err) {
+        res.status(404).json({err})
     }
+
 })
 
 app.get("/api/productos/listar/:id", (req, res) => {
-    
-    if (req.params.id <= (productos.length)) {
-        res.json(productos[req.params.id-1])
-    } else {
-        res.json({"error": "Producto no encontrado"})
+    try{
+        if (req.params.id <= (productos.length)) {
+            res.status(200).json(productos[req.params.id-1])
+        } else {
+            res.status(404).json({"error": "Producto no encontrado"})
+        }
+    }catch(err) {
+        res.status(404).json({err})
     }
 })
 
 app.post("/api/productos/guardar/", (req, res) => {
+   
     let title = req.query.title
     let price = parseInt(req.query.price)
     let thumbnail = req.query.price
+  
 
-    productos.push(new Producto(title, price, thumbnail))
-    
-    res.json(productos[productos.length -1])
+    try{
+            productos.push(new Producto(title, price, thumbnail))
+            res.status(200).json(productos[productos.length -1])
+        
+    }catch(err) {
+        res.status(404).json(err)
+    }
 })
