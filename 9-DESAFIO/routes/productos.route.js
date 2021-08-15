@@ -4,6 +4,15 @@ const router = express.Router()
 var multer = require('multer');
 var upload = multer();
 
+let storage = multer.diskStorage ({
+    destination: function (req, file, callback){
+        callback(null, "uploads")
+    },
+    filename:function(req, file, callback){
+        callback(null, file.originalname)
+    }
+})
+let uploadFile = multer({storage})
 
 let productos = []
 
@@ -112,17 +121,22 @@ router.use(express.json());
 router.use(express.urlencoded({ extended: true })); 
 
 // for parsing multipart/form-data
-router.use(upload.array()); 
+// router.use(upload.array()); 
 
 
-router.post("/guardarform", (req, res) => {
+router.post("/guardarform", uploadFile.single("thumbnail"),(req, res) => {
     let title = req.body.title
     let price = parseInt(req.body.price)
-    let thumbnail = req.body.thumbnail
+    let thumbnail = req.file.path
   
     try{
+            if (!req.file) {
+                const error = new Error("sin archivos")
+                error.httpStatusCode = 400
+                return next(error)
+            }
             productos.push(new Producto(title, price, thumbnail))
-            res.status(200).json(productos[productos.length -1])
+            res.send(productos[productos.length -1])
         
     }catch(err) {
         res.status(404).json(err)
