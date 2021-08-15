@@ -36,6 +36,7 @@ app.get("/api/productos/listar", (req, res) => {
 
 })
 
+
 app.get("/api/productos/listar/:id", (req, res) => {
     try{
         if (req.params.id <= (productos.length)) {
