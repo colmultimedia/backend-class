@@ -1,5 +1,20 @@
 const express = require('express')
 const router = express.Router()
+const app = express();
+const handlebars = require("express-handlebars");
+
+app.engine("hbs",handlebars(
+    {
+        extname: '.hbs',
+        defaultlayout: "index.hbs",
+        layoutsDir: __dirname + "/views/layouts",
+        partialsDir: __dirname + "/views/partials"
+    }
+    ))
+        
+        app.set('views','./views');
+        app.set('view engine','hbs');
+
 
 var multer = require('multer');
 var upload = multer();
@@ -30,6 +45,9 @@ var removeItemFromArr = ( arr, item ) => {
     i !== -1 && arr.splice( i, 1 );
 };
 
+router.get('/vistas', (req, res) => {
+    res.render('main',{layout: 'index.hbs'})
+})
 
 productos.push(new Producto ("coffee", 100, "/coffee.jps"))
 productos.push(new Producto ("Suggar", 5, "/sugar.jps"))

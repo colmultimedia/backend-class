@@ -15,10 +15,6 @@ app.engine("hbs",handlebars(
         partialsDir: __dirname + "/views/partials"
     }
     ))
-
-    app.get("/vista" ,(req, res)=>{
-        res.render("main",{});
-        })
         
         app.set('views','./views');
         app.set('view engine','hbs');
