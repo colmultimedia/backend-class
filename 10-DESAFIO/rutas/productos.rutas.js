@@ -45,7 +45,7 @@ var removeItemFromArr = ( arr, item ) => {
     i !== -1 && arr.splice( i, 1 );
 };
 
-router.get('/vistas', (req, res) => {
+router.get('/vista', (req, res) => {
     res.render('main',{layout: 'index.hbs'})
 })
 
