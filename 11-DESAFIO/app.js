@@ -1,5 +1,4 @@
 const express = require("express");
-const handlebars = require("express-handlebars");
 
 const port = 8000;
 const app = express();
@@ -9,8 +8,10 @@ const server = app.listen(port, () => {
     console.log("Corriendo en el puerto " + server.address().port)
 })
 
-app.set("view engine", "ejs");
-        
+
+app.set("views", "./views");
+app.set("view engine", "pug");
+
         // app.use(express.static('public'));
 
 
