@@ -25,8 +25,20 @@ var removeItemFromArr = ( arr, item ) => {
 };
 
 router.get('/vista', (req, res) => {
+
+    let validar = () => {
+        if (productos.length > 0 ) {
+            return true
+        } else {
+            return false
+        }
+    }
+
+    let validarProd = validar()
+
+
     try{
-        res.render('main', { layout: 'index', productos });
+        res.render('main', { layout: 'index', productos, validarProd });
         }catch(err){
             res.status(404).json({err})
         }
@@ -114,15 +126,17 @@ router.delete("/delete/:id", (req, res) => {
 router.post("/guardarform", (req, res) => {
     
     let nuevoProducto = req.body;
-    console.log(nuevoProducto)
-   
-    productos.push(new Producto(
-        nuevoProducto.title,
-        nuevoProducto.price,
-        nuevoProducto.thumbnail
-    ));
+   try {
+       productos.push(new Producto(
+           nuevoProducto.title,
+           nuevoProducto.price,
+           nuevoProducto.thumbnail
+           ));
+        res.redirect('/api/productos/vista')
+   } catch(err) {
+    throw new Error(err)
+   }
 
-    res.redirect('/api/productos/vista');
 });
 
 
