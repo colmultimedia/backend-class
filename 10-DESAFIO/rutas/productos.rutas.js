@@ -1,33 +1,12 @@
 const express = require('express')
 const router = express.Router()
-const app = express();
-const handlebars = require("express-handlebars");
-
-app.engine("hbs",handlebars(
-    {
-        extname: '.hbs',
-        defaultlayout: "index.hbs",
-        layoutsDir: __dirname + "/views/layouts",
-        partialsDir: __dirname + "/views/partials"
-    }
-    ))
-        
-        app.set('views','./views');
-        app.set('view engine','hbs');
 
 
-var multer = require('multer');
-var upload = multer();
+router.use(express.json());
+router.use(express.urlencoded({ extended: true }));
 
-let storage = multer.diskStorage ({
-    destination: function (req, file, callback){
-        callback(null, "uploads")
-    },
-    filename:function(req, file, callback){
-        callback(null, file.originalname)
-    }
-})
-let uploadFile = multer({storage})
+//  router.use(express.json()); 
+//  router.use(express.urlencoded({ extended: true })); 
 
 let productos = []
 
@@ -46,12 +25,16 @@ var removeItemFromArr = ( arr, item ) => {
 };
 
 router.get('/vista', (req, res) => {
-    res.render('main',{layout: 'index.hbs'})
+    try{
+        res.render('main', { layout: 'index', productos });
+        }catch(err){
+            res.status(404).json({err})
+        }
 })
 
-productos.push(new Producto ("coffee", 100, "/coffee.jps"))
-productos.push(new Producto ("Suggar", 5, "/sugar.jps"))
-productos.push(new Producto ("Milk", 60, "/milk.jps"))
+productos.push(new Producto ("coffee", 100, "https://cdn3.iconfinder.com/data/icons/business-avatar-1/512/3_avatar-512.png"))
+productos.push(new Producto ("Suggar", 5, "https://cdn3.iconfinder.com/data/icons/business-avatar-1/512/11_avatar-512.png"))
+productos.push(new Producto ("Milk", 60, "https://cdn3.iconfinder.com/data/icons/business-avatar-1/512/2_avatar-512.png"))
 
 
 
@@ -126,22 +109,28 @@ router.delete("/delete/:id", (req, res) => {
     }
    
 })
+ 
+
+router.post("/guardarform", (req, res) => {
+    
+    let nuevoProducto = req.body;
+    console.log(nuevoProducto)
+   
+    productos.push(new Producto(
+        nuevoProducto.title,
+        nuevoProducto.price,
+        nuevoProducto.thumbnail
+    ));
+
+    res.redirect('/api/productos/vista');
+});
 
 
-router.use(express.json()); 
-router.use(express.urlencoded({ extended: true }));  
+    // try{
+           
+    //         
+    // }catch(err) {
+    //     res.status(404).json(err)
+    // }
 
-router.post("/guardarform", uploadFile.single("thumbnail"),(req, res) => {
-    try{
-            if (!req.file) {
-                const error = new Error("sin archivos")
-                error.httpStatusCode = 400
-                return next(error)
-            }
-            productos.push(new Producto (req.body.title, parseInt(req.body.price), req.file.path))
-        res.status(200).json(productos[productos.length-1])
-    }catch(err) {
-        res.status(404).json(err)
-    }
-})
 module.exports = router;
