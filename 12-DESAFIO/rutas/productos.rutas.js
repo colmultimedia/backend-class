@@ -27,7 +27,7 @@ var removeItemFromArr = ( arr, item ) => {
 };
 
 
-socket.emit('render', 'Hola usuario')
+
 
 router.get('/vista', (req, res) => {
 
@@ -42,8 +42,9 @@ router.get('/vista', (req, res) => {
     let validarProd = validar()
 
 
-    try{
+    try{    
             res.render('main', { layout: 'index', productos, validarProd })
+
         }catch(err){
             res.status(404).json({err})
         }
@@ -131,6 +132,7 @@ router.delete("/delete/:id", (req, res) => {
 router.post("/guardarform", (req, res) => {
     
     let nuevoProducto = req.body;
+    console.log(nuevoProducto)
    try {
        productos.push(new Producto(
            nuevoProducto.title,

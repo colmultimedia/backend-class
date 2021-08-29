@@ -42,5 +42,3 @@ const productosRutas = require("./rutas/productos.rutas");
     app.use('/api/productos', productosRutas[0]);
 
     
-
-    
