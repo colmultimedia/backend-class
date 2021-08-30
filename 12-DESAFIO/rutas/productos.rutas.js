@@ -1,10 +1,14 @@
 const express = require('express')
 const router = express.Router()
+const io = require('socket.io');
+const socket = io()
 
 
 router.use(express.json());
 router.use(express.urlencoded({ extended: true }));
 
+//  router.use(express.json()); 
+//  router.use(express.urlencoded({ extended: true })); 
 
 let productos = []
 
@@ -22,14 +26,34 @@ var removeItemFromArr = ( arr, item ) => {
     i !== -1 && arr.splice( i, 1 );
 };
 
+
+socket.emit('render', 'Hola usuario')
+
 router.get('/vista', (req, res) => {
 
-    res.render("index");
+    let validar = () => {
+        if (productos.length > 0 ) {
+            return true
+        } else {
+            return false
+        }
+    }
+
+    let validarProd = validar()
+
+
+    try{
+            res.render('main', { layout: 'index', productos, validarProd })
+        }catch(err){
+            res.status(404).json({err})
+        }
 })
 
-productos.push(new Producto ("coffee", 100, "https://cdn3.iconfinder.com/data/icons/business-avatar-1/512/3_avatar-512.png"))
-productos.push(new Producto ("Suggar", 5, "https://cdn3.iconfinder.com/data/icons/business-avatar-1/512/11_avatar-512.png"))
-productos.push(new Producto ("Milk", 60, "https://cdn3.iconfinder.com/data/icons/business-avatar-1/512/2_avatar-512.png"))
+// productos.push(new Producto ("coffee", 100, "https://cdn3.iconfinder.com/data/icons/business-avatar-1/512/3_avatar-512.png"))
+// productos.push(new Producto ("Suggar", 5, "https://cdn3.iconfinder.com/data/icons/business-avatar-1/512/11_avatar-512.png"))
+// productos.push(new Producto ("Milk", 60, "https://cdn3.iconfinder.com/data/icons/business-avatar-1/512/2_avatar-512.png"))
+
+
 
 
 router.get("/", (req, res) => {
@@ -58,7 +82,7 @@ router.get("/:id", (req, res) => {
 })
 
 router.post("/guardar", (req, res) => {
-   
+
     try{
         productos.push(new Producto (req.query.title, parseInt(req.query.price), req.query.thumbnail))
         res.status(200).json(productos[productos.length-1])
@@ -96,16 +120,16 @@ router.delete("/delete/:id", (req, res) => {
             } else {
                 res.status(200).json({"msg":"No hay productos"})
             }
-    
+
     }catch(err) {
         throw new error(err)
     }
-   
+
 })
- 
+
 
 router.post("/guardarform", (req, res) => {
-    
+
     let nuevoProducto = req.body;
    try {
        productos.push(new Producto(
@@ -121,11 +145,4 @@ router.post("/guardarform", (req, res) => {
 });
 
 
-    // try{
-           
-    //         
-    // }catch(err) {
-    //     res.status(404).json(err)
-    // }
-
-module.exports = [router, productos];
+module.exports = [router, productos]; 
