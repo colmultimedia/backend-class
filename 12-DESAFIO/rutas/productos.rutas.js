@@ -5,16 +5,12 @@ const router = express.Router()
 router.use(express.json());
 router.use(express.urlencoded({ extended: true }));
 
-//  router.use(express.json()); 
-//  router.use(express.urlencoded({ extended: true })); 
 
-let productos = {
-    items: []
-}
+let productos = []
 
 class Producto {
     constructor (title, price, thumbnail) {
-        this.id = productos.items.length+1
+        this.id = productos.length+1
         this.title = title
         this.price = price
         this.thumbnail = thumbnail
@@ -28,17 +24,17 @@ var removeItemFromArr = ( arr, item ) => {
 
 router.get('/vista', (req, res) => {
 
-    res.render("index", productos);
+    res.render("index");
 })
 
-productos.items.push(new Producto ("coffee", 100, "https://cdn3.iconfinder.com/data/icons/business-avatar-1/512/3_avatar-512.png"))
-productos.items.push(new Producto ("Suggar", 5, "https://cdn3.iconfinder.com/data/icons/business-avatar-1/512/11_avatar-512.png"))
-productos.items.push(new Producto ("Milk", 60, "https://cdn3.iconfinder.com/data/icons/business-avatar-1/512/2_avatar-512.png"))
+productos.push(new Producto ("coffee", 100, "https://cdn3.iconfinder.com/data/icons/business-avatar-1/512/3_avatar-512.png"))
+productos.push(new Producto ("Suggar", 5, "https://cdn3.iconfinder.com/data/icons/business-avatar-1/512/11_avatar-512.png"))
+productos.push(new Producto ("Milk", 60, "https://cdn3.iconfinder.com/data/icons/business-avatar-1/512/2_avatar-512.png"))
 
 
 router.get("/", (req, res) => {
     try{
-        if(productos.items.length > 0){
+        if(productos.length > 0){
             res.status(200).json(productos)
         }else{
             res.status(404).json({"error": "There's not any product available."})
@@ -51,8 +47,8 @@ router.get("/", (req, res) => {
 
 router.get("/:id", (req, res) => {
     try{
-        if (req.params.id <= (productos.items.length)) {
-            res.status(200).json(productos.items[req.params.id-1])
+        if (req.params.id <= (productos.length)) {
+            res.status(200).json(productos[req.params.id-1])
         } else {
             res.status(404).json({"error": "Producto no encontrado"})
         }
@@ -64,8 +60,8 @@ router.get("/:id", (req, res) => {
 router.post("/guardar", (req, res) => {
    
     try{
-        productos.items.push(new Producto (req.query.title, parseInt(req.query.price), req.query.thumbnail))
-        res.status(200).json(productos[productos.items.length-1])
+        productos.push(new Producto (req.query.title, parseInt(req.query.price), req.query.thumbnail))
+        res.status(200).json(productos[productos.length-1])
     }catch(err){
         res.status(404).json(err)
     }
@@ -94,9 +90,9 @@ router.delete("/delete/:id", (req, res) => {
 
         let id = parseInt(req.params.id)
 
-            if(id-1 < productos.items.length){
+            if(id-1 < productos.length){
                 res.status(200).json("elemente deleted")
-                removeItemFromArr(productos, productos.items[id-1])
+                removeItemFromArr(productos, productos[id-1])
             } else {
                 res.status(200).json({"msg":"No hay productos"})
             }
@@ -112,7 +108,7 @@ router.post("/guardarform", (req, res) => {
     
     let nuevoProducto = req.body;
    try {
-       productos.items.push(new Producto(
+       productos.push(new Producto(
            nuevoProducto.title,
            nuevoProducto.price,
            nuevoProducto.thumbnail
@@ -132,4 +128,4 @@ router.post("/guardarform", (req, res) => {
     //     res.status(404).json(err)
     // }
 
-module.exports = router;
+module.exports = [router, productos];
