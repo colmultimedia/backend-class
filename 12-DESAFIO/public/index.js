@@ -1,10 +1,24 @@
 const socket = io()
-document.addEventListener('DOMContentLoaded', function() {
 
-    // const template = document.getElementById("template")
-    // const toRender = document.getElementById("toRender")
-     socket.on("producto", msg => {
-         console.log(msg) // recibo el producto
+    const my_template = document.querySelector("#template")
+    const toRender = document.getElementById("toRender")
+
+       
+    socket.on('connect', () => {
+
+        console.log('Usuario conectado: ' + socket.id);
+         });
+
+        socket.on("producto", (productos) => {
+        
+        const template = Handlebars.compile(my_template.innerHTML);
+        toRender.innerHTML =  template({
+            productos:productos
+            
+        });
+
+        console.log(productos)
+
      })
 
     
@@ -12,7 +26,7 @@ document.addEventListener('DOMContentLoaded', function() {
      // guardarProd.addEventListener("click", (e) => {
          //     socket.emit("producto",{title: title.value, price: price.value, thumbnail: thumb.value}); // To server
          // });
-        }) 
+
         
         function enviarProducto (){
    
@@ -32,7 +46,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }).then(res => res.json())
                 .catch(error => console.error('Error:', error))
                 
-                .then(response =>  socket.emit("producto", response));
+                .then(response =>  console.log(response));
                         
                //mando el producto nuevo.
             }

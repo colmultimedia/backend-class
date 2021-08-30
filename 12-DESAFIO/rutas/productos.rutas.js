@@ -10,7 +10,13 @@ router.use(express.urlencoded({ extended: true }));
 //  router.use(express.json()); 
 //  router.use(express.urlencoded({ extended: true })); 
 
-let productos = []
+let productos = [{
+    "id": 1,
+    "title": "coffee",
+    "price": 100, 
+    "thumbnail": "https://cdn3.iconfinder.com/data/icons/business-avatar-1/512/3_avatar-512.png"
+}
+]
 
 class Producto {
     constructor (title, price, thumbnail) {
@@ -40,17 +46,15 @@ router.get('/vista', (req, res) => {
     }
 
     let validarProd = validar()
-
-
     try{    
-            res.render('main', { layout: 'index', productos, validarProd })
+            res.render('main', { layout: 'index', validarProd})
 
         }catch(err){
             res.status(404).json({err})
         }
 })
 
-// productos.push(new Producto ("coffee", 100, "https://cdn3.iconfinder.com/data/icons/business-avatar-1/512/3_avatar-512.png"))
+ //productos.push(new Producto ("coffee", 100, "https://cdn3.iconfinder.com/data/icons/business-avatar-1/512/3_avatar-512.png"))
 // productos.push(new Producto ("Suggar", 5, "https://cdn3.iconfinder.com/data/icons/business-avatar-1/512/11_avatar-512.png"))
 // productos.push(new Producto ("Milk", 60, "https://cdn3.iconfinder.com/data/icons/business-avatar-1/512/2_avatar-512.png"))
 
