@@ -11,11 +11,13 @@ const socket = io()
 
         socket.on("producto", (productos) => {
         
-        const template = Handlebars.compile(my_template.innerHTML);
-        toRender.innerHTML =  template({
-            productos:productos
+        const template = Handlebars.compile(my_template);
+
+        console.log(template())
+        // toRender.innerHTML =  template({
+        //     productos:productos
             
-        });
+        // });
 
         console.log(productos)
 
