@@ -1,9 +1,8 @@
-var express = require("express");
-var app = express();
-var server = require("http").Server(app);
-var io = require("socket.io")(server);
+const io = require("socket.io")(server);
+const port = 8080
 const moment = require("moment")
 const productosRutas = require("./rutas/productos.rutas");
+const server = express()
     
 app.use('/api/productos', productosRutas[0]);
 
@@ -42,7 +41,7 @@ io.on("connection", function (socket) {
   });
 });
 
-server.listen(8080, function () {
-  console.log("Servidor corriendo en http://localhost:8080");
+server.listen(port, function () {
+  console.log("Servidor corriendo en http://localhost" + port);
 });
 
