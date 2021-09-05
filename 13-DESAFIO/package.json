@@ -1,7 +1,7 @@
 {
   "scripts": {
-    "ts": "tsc server.ts -w",
-    "babel": "npx babel appES6.js -o server.js -w",
+    "ServerTStoJS5": "tsc server.ts -w",
+    "ServerES6toJS5": "npx babel server.ES6.js -o server.js -w",
     "start": "node server.js"
   },
   "dependencies": {
