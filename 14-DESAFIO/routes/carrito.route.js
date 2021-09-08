@@ -1,13 +1,12 @@
 import express from 'express'
 import Carrito from '../classes/carrito.class.js'
-import Producto from '../classes/producto.class.js'
 import productos from './productos.route.js'
 
 export const routerCarritos = express.Router()
 
-export let carritos = {
-    items: []
-}
+export let carritos = [new Carrito()]
+
+
 
 const removeItemFromArr = ( arr, item ) => {
     var i = arr.indexOf( item );
@@ -18,37 +17,79 @@ const removeItemFromArr = ( arr, item ) => {
 routerCarritos.use(express.json());
 routerCarritos.use(express.urlencoded({ extended: true }));
 
-carritos.items.push(new Carrito(carritos.items.length+1, new Producto (productos.items.length+1, "Café", "molido origen quindio", 1420, "https://cdn3.iconfinder.com/data/icons/business-avatar-1/512/3_avatar-512.png", 4500, 35 )) )
 
-routerCarritos.get("/listar", (req, res) => {
+
+routerCarritos.get("/", (req, res) => {
     try{
-        if(carritos.items.length > 0){
+        
             res.status(200).json(carritos)
-        }else{
-            res.status(404).json({"error": "No existen carritos disponibles"})
-        }
+     
     }catch(err) {
         res.status(404).json({err})
     }
 
 })
 
-const arregloProd = []
-let iterador = 0
 
-routerCarritos.get("/agregar/:id_producto", (req, res) => {
-    try{
-        let id_producto = parseInt(req.params.id_producto)
+routerCarritos.post("/:id_producto", (req, res) => {
+
+    let id_producto = parseInt(req.params.id_producto)
+
+    if (productos.items.filter(element => element.id == id_producto).length > 0) {
+
         let prodSelect = productos.items[id_producto-1]
-        prodSelect.id = iterador+1
-        iterador++
+        let prodUser = JSON.parse( JSON.stringify( prodSelect ) );
         
-        carritos.items[0].productos.push(prodSelect)
-        res.status(200).json(carritos.items[0])
-    }catch(err){
-        res.status(404).json(err)
+        
+        if (carritos[0].productos.items.filter(element => element.id === id_producto).length > 0) {
+            
+           carritos[0].productos.items.filter(element => element.id === id_producto).map(obj => obj.qty = obj.qty + 1)
+            
+        }else{
+        
+            carritos[0].productos.items.push(prodUser)
+            }
+        
+            res.status(200).json(carritos)
+            
+    } else {
+        let msg = "El producto no existe en la DB"
+        console.log(msg)
+        res.status(200).json(msg)
     }
+
+   
 })
+
+
+routerCarritos.delete("/:id_producto", (req, res) => {
+    
+    
+    try {
+
+        
+        let id_producto = parseInt(req.params.id_producto)
+
+        if(id_producto-1 < carritos[0].productos.items.length){
+
+                    let elemento = carritos[0].productos.items.filter(element => element.id === id_producto)
+                    let indice = carritos[0].productos.items.indexOf(elemento[0])
+            
+                    removeItemFromArr(carritos[0].productos.items, carritos[0].productos.items[indice])
+
+                    res.status(200).json(carritos[0])
+
+
+                } else {
+                    res.status(200).json({"msg":"No existen productos en el carrito"})
+                }
+        
+        }catch(err) {
+            throw new Error(err)
+        }
+
+})
+ 
 
 
 export default Carrito

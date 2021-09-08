@@ -1,9 +1,9 @@
 export class Carrito {
-    constructor(id, productos) {
+    constructor() {
         
-        this.id = id
+        this.id = 0
         this.date = new Date()
-        this.productos = [{productos}]
+        this.productos = {items: []}
     }
 }
 

@@ -11,6 +11,7 @@ export class Producto {
         this.picture = picture
         this.price = price
         this.stock = stock
+        this.qty = 1
     }
 }
 

@@ -18,7 +18,8 @@ router.use(express.json());
 router.use(express.urlencoded({ extended: true }));
 
 
-productos.items.push(new Producto (productos.items.length+1, "Café", "molido origen quindio", 1420, "https://cdn3.iconfinder.com/data/icons/business-avatar-1/512/3_avatar-512.png", 4500, 35 ))
+ productos.items.push(new Producto (productos.items.length+1, "Café", "molido origen quindio", 1420, "https://cdn3.iconfinder.com/data/icons/business-avatar-1/512/3_avatar-512.png", 4500, 35 ))
+ productos.items.push(new Producto (productos.items.length+1, "Café arguello", "molido origen quindio", 1420, "https://cdn3.iconfinder.com/data/icons/business-avatar-1/512/3_avatar-512.png", 4500, 35 ))
 
 router.get("/", (req, res) => {
     try{
@@ -45,7 +46,7 @@ router.get("/:id", (req, res) => {
     }
 })
 
-router.post("/agregar", (req, res) => {
+router.post("/", (req, res) => {
    //id, date, name, description, code, picture, price, stock
    if (administrador){
     try{
@@ -69,7 +70,7 @@ router.post("/agregar", (req, res) => {
 })
 
 
-router.put("/actualizar/:id", (req, res) => {
+router.put("/:id", (req, res) => {
 
     if(administrador) {
         try {
@@ -95,7 +96,7 @@ router.put("/actualizar/:id", (req, res) => {
 
 })
 
-router.delete("/borrar/:id", (req, res) => {
+router.delete("/:id", (req, res) => {
     if (administrador) {
         try {
 
@@ -117,25 +118,5 @@ router.delete("/borrar/:id", (req, res) => {
     }
    
 })
- 
-
-router.post("/guardarform", (req, res) => {
-    
-    let nuevoProducto = req.body;
-   try {
-       productos.items.push(new Producto(
-           nuevoProducto.name,
-           nuevoProducto.description,
-           nuevoProducto.code,
-           nuevoProducto.picture,
-           nuevoProducto.price,
-           nuevoProducto.stock
-           ));
-        res.redirect('/api/productos/vista')
-   } catch(err) {
-    throw new Error(err)
-   }
-
-});
 
 export default productos
