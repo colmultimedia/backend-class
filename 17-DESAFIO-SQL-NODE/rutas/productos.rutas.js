@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const { guardarProducto, knex} = require('../controllers/serverdb')
+const {knex} = require('../controllers/serverdb')
 
 router.use(express.json()); 
 router.use(express.urlencoded({ extended: true }));  
@@ -49,15 +49,17 @@ router.post("/", (req, res) => {
     if(admin){
     try{
 
-        guardarProducto(
-            req.query.name, 
-            req.query.description,
-            parseInt(req.query.code),
-            req.query.picture,
-            parseInt(req.query.price), 
-            parseInt(req.query.stock))
 
-        res.status(200).json("item creado")
+            knex('lista').insert({
+                qty: 1,
+                name: req.query.name,
+                description: req.query.description,
+                code:  parseInt(req.query.code),
+                picture: req.query.picture,
+                price: parseInt(req.query.price), 
+                stock: parseInt(req.query.stock)
+                
+              }).then( id => knex('lista').select('*').where({'id': id[0]}).then((data) =>  res.status(200).json(data[0])))
 
 
     }catch(err){

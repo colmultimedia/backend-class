@@ -2,22 +2,10 @@ const conectarMaria = require('./mariadb.js')
 
 const knex = require('knex')(conectarMaria)
 
-function guardarProducto (name, description, code, picture, price, stock) {
 
-  knex('lista').insert({
-    qty: 1,
-    name: name,
-    description: description,
-    code: code,
-    picture: picture,
-    price: price,
-    stock: stock
-    
-  }).then( id => knex('lista').select('*').where({'id': id[0]}).then((data) => console.log(data)))
-  // knex("lista").select("*").then((d) => console.log(d))
-  return false 
   
-}
+  // knex("lista").select("*").then((d) => console.log(d))
+
 
 
 
@@ -40,4 +28,32 @@ function guardarProducto (name, description, code, picture, price, stock) {
 // )
 
 
-module.exports = {guardarProducto, knex, conectarMaria}
+
+
+// knex.schema.createTable('carrito', (table)=> {
+//     table.increments("id").primary();
+//     table.datetime("date", { precision: 6 }).defaultTo(knex.fn.now(6));
+// }).then (
+//     (console.log('tabla creada'),
+
+//     (err) => console.log(err),
+//     () => knex.destroy())
+//   )
+    
+  //   knex.schema.createTable('relprod', (table)=> {
+  //     table.integer("id-carrito");
+  //     table.integer("id-producto");
+  //     table.integer("qty");
+  //     table.datetime("date", { precision: 6 }).defaultTo(knex.fn.now(6));
+  // }).then (
+  //     (console.log('tabla creada'),
+  
+
+  //   (err) => console.log(err),
+  //   () => knex.destroy())
+  // )
+
+// knex("carrito").insert({}).then(_ => console.log("carrito creado"))
+    
+
+module.exports = {knex, conectarMaria}
