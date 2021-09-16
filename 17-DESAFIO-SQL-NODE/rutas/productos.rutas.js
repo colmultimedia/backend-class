@@ -8,19 +8,20 @@ let admin = true;
 
 
 router.get("/", (req, res) => {
-
-    knex("lista").select("*").then((data) => res.status(200).json(data))
-   
-    
-    //      try{
-    //     if(productos.length > 0){
-    //         res.status(200).json(productos)
-    //     }else{
-    //         res.status(404).json({"error": "There's not any product available."})
-    //     }
-    // }catch(err) {
-    //     res.status(404).json({err})
-    // }
+    try{
+        knex("lista").select("*").then((data) => {
+        
+        if(data > 0){
+            
+            res.status(200).json(data)
+        }else {
+            res.status(200).json("No existen productos disponibles")
+        }
+    })
+       
+    }catch(err) {
+        console.error(err)
+    }
    
 })
 router.get('/vista', (req, res) => {
@@ -33,16 +34,6 @@ router.get("/:id", (req, res) => {
    let id =  req.params.id 
    knex('lista').select('*').where({'id': id})
    .then((data) =>  res.status(200).json(data[0]))
-   
-    // try{
-    //     if (req.params.id <= (productos.length)) {
-    //         res.status(200).json(productos[req.params.id])
-    //     } else {
-    //         res.status(404).json({"error": "Producto no encontrado"})
-    //     }
-    // }catch(err) {
-    //     res.status(404).json({err})
-    // }
 })
 
 router.post("/", (req, res) => {
@@ -51,7 +42,6 @@ router.post("/", (req, res) => {
 
 
             knex('lista').insert({
-                qty: 1,
                 name: req.query.name,
                 description: req.query.description,
                 code:  parseInt(req.query.code),
