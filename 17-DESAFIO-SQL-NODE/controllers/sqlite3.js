@@ -1,9 +1,9 @@
 
-export const sqlite = {
+const sqlite = {
     client: 'sqlite3',
     connection: () => ({
       filename: '../DB/messages.sqlite'
     }),
   };
 
-export default sqlite
+module.exports = sqlite

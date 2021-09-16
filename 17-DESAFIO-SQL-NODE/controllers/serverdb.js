@@ -1,6 +1,9 @@
-const conectarMaria = require('./mariadb.js')
+const conectarMaria = require('./mariadb')
+const sqlite = require('./sqlite3')
 
 const knex = require('knex')(conectarMaria)
+
+const knexSqlite = require('knex')(sqlite)
 
 
 
@@ -62,5 +65,21 @@ knex.schema.hasTable("carrito").then(exist => {
       
     })
     
+
+    knexSqlite.schema.hasTable("messages").then(exist => {
+      if(!exist) {
+    
+        return knexSqlite.schema.createTable('messages', (table)=> {
+          table.increments("id").primary();
+          table.datetime("date", { precision: 6 }).defaultTo(knexSqlite.fn.now(6));
+      }).then (
+          (console.log('tabla creada'),
+      
+          (err) => console.log(err),
+          () => knexSqlite.destroy())
+        )
+      } 
+        
+      })
 
 module.exports = {knex, conectarMaria}
