@@ -1,9 +1,39 @@
 const conectarMaria = require('./mariadb')
-const sqlite = require('./sqlite3')
-
+const sqlite3 = require('sqlite3').verbose()
 const knex = require('knex')(conectarMaria)
 
-const knexSqlite = require('knex')(sqlite)
+let db = new sqlite3.Database('./db/messages.sqlite', (err) => {
+  if (err) {
+    return console.error(err.message);
+  }
+  console.log('Connectado a DB SQLITE');
+});
+db.serialize(() => {
+  db.each(`
+
+  DROP TABLE IF EXISTS  "mensajes";
+  
+  CREATE TABLE "mensajes"
+  (
+      [Id] INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+      [name] NVARCHAR(160)  NOT NULL,
+      [mensaje] NVARCHAR(160) NOT NULL,
+      FOREIGN KEY ([Id]) REFERENCES "ID" ([Id])
+                  ON DELETE NO ACTION ON UPDATE NO ACTION
+  );`, (err, row) => {
+    if (err) {
+      console.error(err.message);
+    }
+   
+  });
+});
+db.close((err) => {
+  if (err) {
+    return console.error(err.message);
+  }
+
+});
+
 
 
 
@@ -66,20 +96,6 @@ knex.schema.hasTable("carrito").then(exist => {
     })
     
 
-    knexSqlite.schema.hasTable("messages").then(exist => {
-      if(!exist) {
     
-        return knexSqlite.schema.createTable('messages', (table)=> {
-          table.increments("id").primary();
-          table.datetime("date", { precision: 6 }).defaultTo(knexSqlite.fn.now(6));
-      }).then (
-          (console.log('tabla creada'),
-      
-          (err) => console.log(err),
-          () => knexSqlite.destroy())
-        )
-      } 
-        
-      })
 
 module.exports = {knex, conectarMaria}
