@@ -4,14 +4,12 @@ var express = require('express');
 var app = express();
 var server = require("http").Server(app);
 const cors = require('cors')
-const dbconnect = require("./DB/connection")
 
-dbconnect()
-//import poductos.rutas
-// var productosRutas = require("./rutas/productos.rutas");
-// var carritosRutas = require("./rutas/carrito.rutas");
-// //use router from productos.rutas    
-// app.use('/api/productos', productosRutas[0]);
+
+var productosRutas = require("./rutas/productos.rutas");
+var carritosRutas = require("./rutas/carrito.rutas");
+//use router from productos.rutas    
+app.use('/api/productos', productosRutas[0]);
 // app.use('/api/carritos', carritosRutas[0]);
 
 app.use(cors())

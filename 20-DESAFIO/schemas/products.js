@@ -32,6 +32,6 @@ const productSchema = new Schema({
     },
 
 })
-const prods = model('product', productSchema)
-module.exports  = prods
+
+module.exports  = model('product', productSchema)
 

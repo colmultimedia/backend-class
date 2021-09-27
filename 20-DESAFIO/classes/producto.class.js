@@ -1,7 +1,7 @@
 const productos = require('../rutas/productos.rutas')
 class Producto {
     constructor(id, name, description, code, picture, price, stock){
-        this.id = id
+        this.id = 1
         this.date = new Date()
         this.qty = 1
         this.name = name
