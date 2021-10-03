@@ -17,7 +17,6 @@ var mensajes = [{
 const anibal = new Firebase
 
 anibal.connectDB()
-console.log(anibal.readMessage())
 
 app.set('views','./views');
 app.set('view engine','ejs');
@@ -35,17 +34,19 @@ app.get('/vista', (req, res) => {
 
 
 io.on("connection", function (socket) {
-  console.log("Alguien se ha conectado con Sockets");
-  socket.emit("mensajes", mensajes);
-
-  socket.on("new-mensaje", function(data){
-    anibal.createMessage(data)
-    io.sockets.emit("mensajes", mensajes);
-  });
+    console.log("Alguien se ha conectado con Sockets");
+    anibal.readMessage().then(data => {
+    socket.emit("mensajes", data);
+    })
+    socket.on("new-mensaje", function(data){
+        anibal.createMessage(data)
+        anibal.readMessage().then(data => {
+        io.sockets.emit("mensajes", data);
+    });
+});
 });
 
 server.listen(port, function () {
   console.log("Servidor corriendo en http://localhost" + port);
 });
 
-module.exports = mensajes

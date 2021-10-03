@@ -21,13 +21,12 @@ socket.on("mensajes", function (data) {
   renderChat(data)
 });
 
-var date = new Date()
-var dateConverted = moment(date).format('lll');
+
 
 function addMensaje() {
   var mensaje = {
     email: document.getElementById("email").value,
-    date: dateConverted,
+    date: new Date(),
     opinion: document.getElementById("opinion").value,
     };
 console.log(mensaje)
