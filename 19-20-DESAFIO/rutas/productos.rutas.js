@@ -4,6 +4,9 @@ const {Memoria, Mongo} = require("../classes/mongo")
 const mariaDB = require("../classes/mariadb")
 const FileSys = require("../classes/fs")
 const sqlite = require("../classes/sqlite")
+const faker = require("faker")
+
+faker.locale = "es"
 
 //---------------------------Escoja la opción -----------------------------------
 
@@ -48,8 +51,51 @@ router.get("/", (req, res) => {
     seleccion.show(req, res)
    
 })
-router.get('/vista', (req, res) => {
+
+router.get('/vista-test/', (req, res) => {
+    let productos = {items:[]
+    }
+
+    for(let i = 0; i< 10 ;i++) {
+
+        //nombre precio foto
+
+        let obj = {
+            nombre: faker.vehicle.manufacturer(),
+            precio: faker.commerce.price(),
+            foto: faker.image.transport(100, 100, true)
+        }
+
+       productos.items.push(obj)
+    }
+
+    res.render("index", productos);
+
+})
+
+router.get('/vista-test/:cant', (req, res) => {
+
+    let productos = {items:[]
+    }
+
+    const {cant} = req.params
+    if(cant > 0) {
+        for(let i = 0; i< cant ;i++) {
     
+            //nombre precio foto
+    
+            let obj = {
+                nombre: faker.commerce.productName(),
+                precio: faker.commerce.price(),
+                foto: faker.image.food(100, 100, true)
+            }
+    
+           productos.items.push(obj)
+        }
+        
+    }
+
+
     res.render("index", productos);
 })
 

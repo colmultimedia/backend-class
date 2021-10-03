@@ -1,5 +1,4 @@
 //calls socket and set connection
-var socket = io.connect("http://localhost:8080", { forceNew: true });
 //table config
 //function thar render the new data element by element into html
 function render(data) {

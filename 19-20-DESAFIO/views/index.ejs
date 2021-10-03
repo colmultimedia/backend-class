@@ -19,10 +19,30 @@
             <!-- Title -->
           <h1>Products</h1>
         </div>
-        <div class="card-header">
-            <!-- Subtitle -->
-          <h3>Talk about the products</h3>
-        </div>
+        <div class="table">
+          <table class="table table-dark table-striped">
+            <thead>
+              <tr>
+                <th scope="col">Nombre</th>
+                <th scope="col">Precio</th>
+                <th scope="col">Foto</th>
+              </tr>
+            </thead>
+            <tbody>
+             <% if (items.length != 0) { %>
+               <% items.forEach((items) => { %>
+              <tr>
+                <td><%= items.nombre %></td>
+                <td><%= items.precio %></td>
+                <td><img src ="<%= items.foto %>"" width="100" height="100"></td>
+              </tr>
+              <% }); %>
+              <% } else { %>
+               <tr>
+                 <td colspan="4" class="text-center">No hay productos</td>
+             </tr>
+         <% } %>
+          </table>
         <div>
             <div id="mensajes" style="width:800px; height:300px; overflow: scroll;">
         </div>
