@@ -3,12 +3,13 @@ const router = express.Router()
 const {Memoria, Mongo} = require("../classes/mongo")
 const mariaDB = require("../classes/mariadb")
 const FileSys = require("../classes/fs")
+const sqlite = require("../classes/sqlite")
 
 //---------------------------Escoja la opción -----------------------------------
 
 // "Escoja la base de datos: 0. Memoria / 1. FS / 2. MariaDB Local / 3. MariaDB Remoto / 4. SQLite3 /5. MongoDB Local / 6. MongoDB Atlas / 7. Firebase")
 
-const opcion = 1
+const opcion = 6
 let admin = true;
 
 //--------------------------------------------------------------------------------
@@ -25,6 +26,9 @@ switch(opcion) {
         seleccion = new mariaDB()
         seleccion.connectDB()
         break;
+    case 4:
+        seleccion = new sqlite()
+        seleccion.connectDB() 
     case 5:
         seleccion = new Mongo()
         seleccion.connectDB()
@@ -68,4 +72,4 @@ router.delete("/:id", async (req, res) => {
     seleccion.delete(admin, req, res)
 })
 
-    module.exports =[router];
+    module.exports ={router, opcion};
