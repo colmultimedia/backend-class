@@ -1,5 +1,6 @@
 var socket = io.connect("http://localhost:8080", { forceNew: true });
 
+window.scrollTo(0, document.getElementById('myChatWindow').scrollHeight);
 
 function renderChat(data) {
   console.log(typeof data)

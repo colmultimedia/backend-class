@@ -23,10 +23,6 @@ class Firebase {
             console.error(err)
         }
     }
-   
-    // async showMsg() {
-    //     console.log(await this.readMessage())
-    // }
 
     async readMessage() {
         const db = admin.firestore() 

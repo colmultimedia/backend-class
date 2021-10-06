@@ -5,14 +5,55 @@ const io = require("socket.io")(server);
 const moment = require('moment')
 const port = 8080
 const {Firebase} = require("./db")
+const { normalize, denormalize, schema } = require("normalizr")
+// creating entities
+
+const author = new schema.Entity("authors")
+const message = new schema.Entity("message", {
+  author: author
+})
+// normalize
 
 var date = new Date()
 var dateConverted = moment(date).format('lll');
-var mensajes = [{
-  email: "mattheuv.osorio@geometry.com",
-  date: dateConverted,
-  opinion: "holi"
-}];
+
+var mensaje = {
+  id: 1,
+  mensajes: [{
+  id: "mateo@gmail.com",
+  text: "mensaje del usuario",
+  date: "fecha"
+  },
+  {
+    id: "prueba@gmail.com",
+    text: "mensaje del usuario",
+    date: "fecha"
+    }],
+  authors: [
+    {
+    id: "mateo@gmail.com",
+    nombre: "anibal",
+    apellido: "ff",
+    edad: "edad del usuario",
+    alias: "alias del usuario",
+    avatar: "url.jpg",
+  },
+    {
+    id: "prueba@gmail.com",
+    nombre: "cristian",
+    apellido: "ff",
+    edad: "edad del usuario",
+    alias: "alias del usuario",
+    avatar: "url.jpg",
+  },
+]
+}
+
+
+const normData = normalize(mensaje, message)
+app.get("/test", (req,res)=> {
+res.json(normData.entities.message)
+})
 
 const anibal = new Firebase
 
@@ -23,6 +64,7 @@ app.set('view engine','ejs');
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
 
 
 app.use(express.static("public"));
@@ -47,6 +89,6 @@ io.on("connection", function (socket) {
 });
 
 server.listen(port, function () {
-  console.log("Servidor corriendo en http://localhost" + port);
+  console.log("Servidor corriendo en http://localhost:" + port);
 });
 

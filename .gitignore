@@ -106,3 +106,8 @@ dist
 .tern-port
 
 **/9-desafio/uploads/
+
+
+# Firebase File
+
+**/23-DESAFIO/keys/
