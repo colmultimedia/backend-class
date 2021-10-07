@@ -31,12 +31,10 @@ class Firebase {
             const querySnapshot = await query.orderBy("date", "asc").get()
             let docs= querySnapshot.docs;
 
-            const response = docs.map((doc) => ({
-                 id:doc.id,
-                 date: doc.data().date,
-                 email: doc.data().email,
-                 opinion: doc.data().opinion
-            }))
+
+            const response = docs.data((doc) => (
+                doc.data()
+                ))
             return response
 
         } catch(err)

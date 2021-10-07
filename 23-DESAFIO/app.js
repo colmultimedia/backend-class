@@ -12,6 +12,9 @@ const author = new schema.Entity("authors")
 const message = new schema.Entity("message", {
   author: author
 })
+const messages = new schema.Entity("messages", {
+  messages: [message]
+})
 // normalize
 
 var date = new Date()
@@ -50,11 +53,6 @@ var mensaje = {
 }
 
 
-const normData = normalize(mensaje, message)
-app.get("/test", (req,res)=> {
-res.json(normData.entities.message)
-})
-
 const anibal = new Firebase
 
 anibal.connectDB()
@@ -71,7 +69,7 @@ app.use(express.static("public"));
 
 app.get('/vista', (req, res) => {
 
-    res.render("index", mensajes);
+    res.render("index");
 })
 
 
@@ -81,8 +79,16 @@ io.on("connection", function (socket) {
     socket.emit("mensajes", data);
     })
     socket.on("new-mensaje", function(data){
-        anibal.createMessage(data)
+    
+      const query = {
+        id:1,
+        ...data
+      }
+       const normalizeData = normalize(query, messages)
+    
+        anibal.createMessage(normalizeData)
         anibal.readMessage().then(data => {
+          console.log(data)
         io.sockets.emit("mensajes", data);
     });
 });
@@ -91,4 +97,5 @@ io.on("connection", function (socket) {
 server.listen(port, function () {
   console.log("Servidor corriendo en http://localhost:" + port);
 });
+
 

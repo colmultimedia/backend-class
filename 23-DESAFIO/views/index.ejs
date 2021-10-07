@@ -21,24 +21,43 @@
         <!-- Subtitle -->
       <h3>Chat Oz Mr Mo</h3>
     </div>
-    <div>
+    <div class="container p-4">
         <div id="mensajes" style="width:800px; height:300px; overflow: scroll;">
     </div>
-    <div class="container pt-3">
+    <div class="container pt-3" >
       <div class="row  d-flex justify-content-center ">
-        <div class="col-10 pb-3">
+        <div class="col pb-3">
           <form onsubmit="return addMensaje()">
-            <div class="row g-4">
-              <strong> Escriba su correo para chatear</strong>
+            <strong> Escriba su correo para chatear</strong>
+            </div>
+            <div class="row">
               <div class="col-3">
-                <input type="text" name="email" class="form-control" placeholder="pepito@ejemplo.com" aria-label="Email" id="email">
+                <input type="text" name="email" class="form-control" placeholder="Email@gmail.com" aria-label="Email" id="id">
               </div>
-              <div class="col-sm">
-                <input type="text" name="opinion" class="form-control" placeholder="su mensaje" aria-label="opinion" id="opinion">
+              <div class="col-3">
+                <input type="text" name="Name" class="form-control" placeholder="Name" aria-label="Name" id="Name">
+             </div>      
+              <div class="col-3">
+                <input type="text" name="LastName" class="form-control" placeholder="LastName" aria-label="LastName" id="LastName">
+             </div>    
+              <div class="col-3">
+                <input type="number" name="Age" class="form-control" placeholder="Age" aria-label="Age" id="Age">
               </div>
-              <div class="col-1">
-                <input type="submit" class="btn btn-primary" value="send">
+            </div>
+
+            <div class="row pt-3">
+              <div class="col-3">
+                <input type="text" name="Alias" class="form-control" placeholder="Alias" aria-label="Alias" id="Alias">
+              </div><div class="col-3">
+                <input type="text" name="Avatar" class="form-control" placeholder="Avatar" aria-label="Avatar" id="Avatar">
               </div>
+              <div class="col-5">
+                <input type="text" name="opinion" class="form-control" placeholder="write your message" aria-label="opinion" id="text">
+              </div>
+                <div class="col-1">
+                  <input type="submit" class="btn btn-primary" value="send">
+                </div>
+            </div>
           </form>
         </div>
       </div>
