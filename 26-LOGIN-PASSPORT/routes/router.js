@@ -2,28 +2,7 @@ const express = require("express")
 const router = express.Router()
 const carritoRouter = require("./carrito.router")
 const productRouter = require("./productos.router")
-
-
-
-//--------------------------------PASSPORT--------------------------------------
-
-// const passport = require("passport")
-// const { initializePassport } = require("../auth/passport")
-
-// initializePassport(passport)
-
-
-
-// passport.serializeUser(function(user, done) {
-//   done(null, user.id)
-// })
-
-// passport.deserializeUser(function(id, done) {
-//   done(null, {id: 1, name: "aparicio"})
-// })
-//--------------------------------END PASSPORT--------------------------------------
-
-
+const passport = require("passport")
 
 router.use("/carrito", carritoRouter)
 router.use("/productos", productRouter)
@@ -39,8 +18,6 @@ const {Mongo} = require("../db/db")
 const db = new Mongo
 
 
-//FIRST STARTS CONNECTING TO DB
-db.connectDB()
 
 
 router.get("/", (req, res) => {
@@ -48,25 +25,17 @@ router.get("/", (req, res) => {
     res.render("login")
   })
 
-  router.get("/signup", (req,res) => {
+  router.get("/register", (req, res) => {
+  
     res.render("signup")
   })
 
-  router.post("/signup", (req,res) =>{
-    db.createUser(req, res)
-  })
+
   
-  router.get("/password-invalid", (req,res) => {
+  router.get("/faillogin", (req,res) => {
     res.render("logininvalid")
   })
 
-    
-
-router.get('/vista', (req, res, next) => {
-  if(req.isAuthenticated()) return next()
-}, (req, res) => {
-    res.redirect("/login")
-  })
 
   
   router.get("/misesion", (req, res) => {
@@ -83,14 +52,5 @@ router.get('/vista', (req, res, next) => {
   
 
   
-  
-  router.get("/logout", (req, res, next) => {
-    
-    req.session.destroy((err) => {
-      if(err) return next(err)
-      else
-      res.status(200).render("logout")
-    })
-  })
 
 module.exports = {router}

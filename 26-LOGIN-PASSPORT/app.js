@@ -1,12 +1,17 @@
-// DEPENDENCIES REAL TIME
 const express = require("express");
 const app = express();
 const server = require("http").Server(app);
 const moment = require('moment')
 const port = 8080
 const {router} = require("./routes/router")
+const User = require("./schemas/user.schema")
+const mongoose = require("mongoose")
 
-// DEPENDENCIES DB
+app.use(router)
+
+// const User = require("./schemas/user.schema")
+
+// DEPENDENCIES DB FOR SESSION
 const mongoStore = require("connect-mongo")
 
 // DEPENDENCIES SESSION
@@ -16,14 +21,14 @@ const cookieParser = require("cookie-parser")
 // DEPENDENCIES PASSPORT
 const passport = require("passport")
 const LocalStrategy = require("passport-local").Strategy
+const bCrypt = require("bcrypt")
 
 
-// SETTING COOKIES AND ADVANCE OPTIONS
+app.set('views','./views');
+app.set('view engine','ejs');
+
 app.use(cookieParser());
 const advancedOptions = {useNewUrlParser: true, useUnifiedTopology: true}
-
-
-app.use(router)
 
 app.use(session({
   store: mongoStore.create({
@@ -36,49 +41,160 @@ app.use(session({
   cookie: {maxAge: 600000}
 }
 ))
-
-app.set('views','./views');
-app.set('view engine','ejs');
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+app.use(express.static("public"));
 
 app.use(passport.initialize())
 app.use(passport.session())
-
-
-app.use(express.static("public"));
-
-
-passport.use(new LocalStrategy({passReqToCallback: true, },function(req, user, password, done){
   
-  console.log(user)
 
-  if(user =="mateo" && password == "123"){
-    return done(null, {user: "mateo", id: 1})
-  } else {
-    return done(null, false)
+function connectDB() {
+
+    console.log("soy atlas")
+
+    try{
+       mongoose.connect("mongodb+srv://coladmin:mosorio12@cluster0.kduye.mongodb.net/desafio26?retryWrites=true&w=majority",
+         {
+             useNewUrlParser: true,
+             useUnifiedTopology: true
+         }
+     );
+     console.log('Database connected')
+
+    }
+    catch(error){
+        throw new Error(error)
+    }
+}
+
+ connectDB()
+
+passport.use(
+  "login",
+  new LocalStrategy(
+    {
+      passReqToCallback: true,
+    },
+    (req, username, password, done) => {
+      User.findOne({ username: username }, (err, user) => {
+        if (err) {
+          return done(err);
+        }
+        if (!user) {
+          console.log("User Not Found with username " + username);
+          console.log("message", "User Not found.");
+          return done(null, false);
+        }
+        if (!isValidPassword(user, password)) {
+          console.log("Invalid Password");
+          console.log("message", "Invalid Password");
+          return done(null, false);
+        }
+        return done(null, user);
+      });
+    }
+  )
+);
+
+const isValidPassword = (user, password) => {
+  return bCrypt.compareSync(password, user.password);
+};
+
+passport.use(
+  "register",
+  new LocalStrategy(
+    {
+      passReqToCallback: true,
+    },
+    (req, username, password, done) => {
+      const findOrCreateUser = () => {
+        User.findOne({ username: username }, (err, user) => {
+          if (err) {
+            console.log("Error in SignUp: " + err);
+            return done(err);
+          }
+          if (user) {
+            console.log("User already exists");
+            console.log("message", "User Already Exists");
+            return done(null, false);
+          } else {
+            const newUser = new User();
+            newUser.username = username;
+            newUser.password = createHash(password);
+            newUser.save((err) => {
+              if (err) {
+                console.log("Error in Saving user: " + err);
+                throw err;
+              }
+              console.log("User Registration succesful");
+              return done(null, newUser);
+            });
+          }
+        });
+      };
+      process.nextTick(findOrCreateUser);
+    }
+  )
+);
+
+const createHash = (password) => {
+  return bCrypt.hashSync(password, bCrypt.genSaltSync(10), null);
+};
+
+passport.serializeUser((user, done) => {
+  done(null, user._id);
+});
+
+passport.deserializeUser((id, done) => {
+  User.findById(id, (err, user) => {
+    done(err, user);
+  });
+});
+
+
+app.post(
+  "/login",
+  passport.authenticate("login", { failureRedirect: "/faillogin" }),
+  (req, res) => {
+    let { nombre } = req.body;
+    req.session.nombre = nombre;
+    res.redirect("/vista");
   }
-}))
+);
 
-passport.serializeUser(function(user, done) {
-  done(null, user.id)
+
+app.post(
+  "/register",
+  passport.authenticate("register", { failureRedirect: "/failregister" }),
+  (req, res) => {
+    res.redirect("/");
+  }
+);
+
+function checkAuthentication(req,res,next){
+  if(req.isAuthenticated()){
+      next();
+  } else{
+      res.redirect("/");
+  }
+}
+app.get('/vista', checkAuthentication, (req, res) => {
+  res.render("vista")
 })
 
-passport.deserializeUser(function(id, done) {
-  done(null, {id: 1, name: "aparicio"})
-})
-
-app.get("/login", (req, res) => {
-  res.render("login")
-})
-
-app.post('/login', passport.authenticate("local",{
-  successRedirect: "/vista", 
-  failureRedirect: "/password-invalid"
-}))
-
+app.get("/logout", (req, res) => {
+  let nombre = req.user.username;
+  if (nombre) {
+    req.session.destroy((err) => {
+      if (!err) res.render("logout", { nombre });
+      else res.redirect("/");
+    });
+  } else {
+    res.redirect("/");
+  }
+});
 
 
 // Wrong routes msgs
@@ -116,5 +232,8 @@ const io = require("socket.io")(server);
 server.listen(port, function () {
   console.log("Servidor corriendo en http://localhost:" + port);
 });
+
+
+
 
 
