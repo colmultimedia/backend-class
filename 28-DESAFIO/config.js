@@ -9,7 +9,7 @@ module.exports = {
     secret: 'msdcvdlfkdlkl',
     PORT: 8080,
     facebook: {
-        id: '941758093363123',
-        secret: '1e0567cc9f5a879532c2dcc25ef33db8'
+        id: '216722747223189',
+        secret: 'b49103a52c7d0250d4d96ff24eb599b7'
     },
 }

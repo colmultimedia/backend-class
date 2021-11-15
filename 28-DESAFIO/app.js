@@ -1,14 +1,13 @@
 const express = require("express")
 const app = express();
 const server = require("http").Server(app);
-const User = require("./user.schema")
-const { PORT, secret, mongodb } = require('./config')
+const { PORT, secret, mongodb, facebook } = require('./config')
 const mongoose = require("mongoose")
 const session = require("express-session")
 const cookieParser = require("cookie-parser")
 const mongoStore = require("connect-mongo")
 const  passport = require('passport')
-const LocalStrategy = require('passport-local').Strategy;
+const FacebookStrategy = require("passport-facebook").Strategy;
 const bCrypt = require("bcrypt")
 const router = require("./router")
 
@@ -61,85 +60,27 @@ const connectDB = async () => {
 connectDB()
 
 passport.use(
-  "login",
-  new LocalStrategy(
+  new FacebookStrategy(
     {
-      passReqToCallback: true,
+      clientID: facebook.id,
+      clientSecret: facebook.secret,
+      callbackURL: "/facebook-login/callback",
+      profileFields: ["id", "displayName", "photos", "emails"],
+      scope: ["email"],
     },
-    (req, username, password, done) => {
-      User.findOne({ username: username }, (err, user) => {
-        if (err) {
-          return done(err);
-        }
-        if (!user) {
-          console.log("User Not Found with username " + username);
-          console.log("message", "User Not found.");
-          return done(null, false);
-        }
-        if (!isValidPassword(user, password)) {
-          console.log("Invalid Password");
-          console.log("message", "Invalid Password");
-          return done(null, false);
-        }
-        return done(null, user);
-      });
+    (accessToken, refreshToken, profile, done) => {
+      let userProfile = profile;
+      return done(null, userProfile);
     }
   )
 );
 
-const isValidPassword = (user, password) => {
-  return bCrypt.compareSync(password, user.password);
-};
-
-passport.use(
-  "register",
-  new LocalStrategy(
-    {
-      passReqToCallback: true,
-    },
-    (req, username, password, done) => {
-      const findOrCreateUser = () => {
-        User.findOne({ username: username }, (err, user) => {
-          if (err) {
-            console.log("Error in SignUp: " + err);
-            return done(err);
-          }
-          if (user) {
-            console.log("User already exists");
-            console.log("message", "User Already Exists");
-            return done(null, false);
-          } else {
-            const newUser = new User();
-            newUser.username = username;
-            newUser.password = createHash(password);
-            newUser.save((err) => {
-              if (err) {
-                console.log("Error in Saving user: " + err);
-                throw err;
-              }
-              console.log("User Registration succesful");
-              return done(null, newUser);
-            });
-          }
-        });
-      };
-      process.nextTick(findOrCreateUser);
-    }
-  )
-);
-
-const createHash = (password) => {
-  return bCrypt.hashSync(password, bCrypt.genSaltSync(10), null);
-};
-
-passport.serializeUser((user, done) => {
-  done(null, user._id);
+passport.serializeUser(function (user, cb) {
+  cb(null, user);
 });
 
-passport.deserializeUser((id, done) => {
-  User.findById(id, (err, user) => {
-    done(err, user);
-  });
+passport.deserializeUser(function (obj, cb) {
+  cb(null, obj);
 });
 
 
@@ -152,6 +93,16 @@ app.post(
     res.redirect("/");
   }
 );
+
+app.get("/facebook-login", passport.authenticate("facebook"));
+app.get(
+      "/facebook-login/callback",
+      passport.authenticate("facebook", {
+        successRedirect: "/vista",
+        failureRedirect: "/faillogin",
+      })
+    );
+
 
 app.get("/faillogin", (req, res) => {
   res.render("logininvalid");
