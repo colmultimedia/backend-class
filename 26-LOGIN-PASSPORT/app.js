@@ -2,7 +2,7 @@ const express = require("express");
 const app = express();
 const server = require("http").Server(app);
 const moment = require('moment')
-const port = 8080
+const port = process.argv[2] || 8080
 const {router} = require("./routes/router")
 const User = require("./schemas/user.schema")
 const mongoose = require("mongoose")
@@ -108,9 +108,9 @@ passport.use(
     {
       passReqToCallback: true,
     },
-    (req, username, password, done) => {
+    (req, email, password, done) => {
       const findOrCreateUser = () => {
-        User.findOne({ username: username }, (err, user) => {
+        User.findOne({ email: email }, (err, user) => {
           if (err) {
             console.log("Error in SignUp: " + err);
             return done(err);
@@ -121,7 +121,7 @@ passport.use(
             return done(null, false);
           } else {
             const newUser = new User();
-            newUser.username = username;
+            newUser.email = email;
             newUser.password = createHash(password);
             newUser.save((err) => {
               if (err) {

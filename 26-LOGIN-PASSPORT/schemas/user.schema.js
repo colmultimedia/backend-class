@@ -6,7 +6,7 @@ const User = new Schema({
         type: Date,
         default: Date.now
     },
-    username: {
+    email: {
         type: String,
         required: true
     },
