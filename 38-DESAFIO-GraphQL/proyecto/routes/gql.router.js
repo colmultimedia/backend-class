@@ -30,7 +30,6 @@ var schema = buildSchema(`
         qty: Int
     },
     input ProductoInput {
-        date: String
         name: String
         description: String
         code: Int

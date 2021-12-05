@@ -193,7 +193,7 @@ class Mongo {
                 if (!id) res.json({message: "Se requiere el ID"})
         
     
-                const productSaved = await productSchema.findOneAndDelete(id)
+                const productSaved = await productSchema.findByIdAndDelete(id)
                 res.json(`El producto ${productSaved.name} ha sido eliminado con éxito`)
                     
                    
