@@ -6,7 +6,9 @@ const db = new DB
 
 db.connectDB()
 
-async function prodExist (id) {
+// Functions to check if element exists in DB
+// ====================>>>>>>> PRODUCT EXIST? >>>>>>>>========================
+ async function prodExist(id) {
     try{
         await Product.exists({_id: id}, (err, doc) => {
 
@@ -15,19 +17,40 @@ async function prodExist (id) {
                 return false
             }
             else{
+
                 console.log("product exist in database")
                 return true
             }
         })
-
     }catch(err){
         console.error(err)
     }
 
 }
 
+// ====================>>>>>>> CATEGORY EXIST >>>>>>>>========================
 
-export async function readProduct(){
+async function catExist (catName) {
+    try{
+       const query =  await Product.find({category: catName}) 
+    
+            if(query.length == 0){
+                console.log("Category is not available in db")
+                return false
+            }
+            else{
+                console.log("Category exist in database")
+                return true
+            }
+
+    }catch(err){
+        console.error(err)
+    }
+}
+// Functions to make queries to Mongo database
+
+// ====================>>>>>>>LIST PRODUCTS>>>>>>>>========================
+export async function read(){
     try{
         const query = await Product.find()
         if(query.length>0){
@@ -40,23 +63,39 @@ export async function readProduct(){
         console.error(err)
     }
 }
-
-export async function findProduct(id){
-    try{
-        const exist = prodExist(id)
-        if(exist){
-            return false
-        }else{
+// ====================>>>>>>>FIND PRODUCT BY ID>>>>>>>>========================
+export async function find(id){
+    try{ 
+        if(prodExist(id)){
             return Product.findById(id)
+        }else{
+
+            return false
         }
     }
     catch(err){
         console.error(err)
     }
 }
+// ====================>>>>>>>FIND CATEGORY >>>>>>>>========================
+export async function findCategory(catName){
+    try{
+        const exist = await catExist(catName)
+    
+        if(exist){
+            return Product.find({category: catName})
+        }else{
+            return false
+        }
+    }
 
+    catch(err){
+        console.error(err)
+    }
+}
 
-export async function saveProduct(data) {
+// ====================>>>>>>>SAVE PRODUCT >>>>>>>>========================
+export async function save(data) {
     try{
         const newProd = new Product(data)
         return await newProd.save()
@@ -65,7 +104,8 @@ export async function saveProduct(data) {
     }
 }
 
-export async function updateProduct(id, data) {
+// ====================>>>>>>> UPDATE PRODUCT >>>>>>>>========================
+export async function update(id, data) {
     try{
         const exist = prodExist(id)
 
@@ -82,7 +122,9 @@ export async function updateProduct(id, data) {
     }
 }
 
-export async function deleteProduct(id) {
+// ====================>>>>>>> DELETE PRODUCT >>>>>>>>========================
+
+export async function del(id) {
     try{
         const exist = prodExist(id)
 

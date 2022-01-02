@@ -2,21 +2,22 @@ import express from "express";
 export const router = express.Router();
 import { wrongMsgRoute } from "../config/constants.js"
 import  ProductRouter  from "./product.router.js";
-import { TestRouter } from "./test.router.js"
+import MessageRouter from "./message.router.js";
+import UserRouter from "./user.router.js";
 
 
 // Including Routers
 
 const productRouter = new ProductRouter
-const testRouter = new TestRouter
+const messageRouter = new MessageRouter
+const userRouter = new UserRouter
 
+//we need to add user, cart, orders
 router.use("/product", productRouter.start())
-router.use("/test", testRouter.start())
+router.use("/chat", messageRouter.start())
+router.use("/", userRouter.start())
 
-// testing routes
-router.get("/", (req, res) => {
-    res.json("Hello there")
-})
+
 
 
 // Wrong routes
