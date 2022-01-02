@@ -1,6 +1,6 @@
 import  express  from "express";
 import { PORT } from "./config/constants.js"
-import { router } from "./router.js"
+import { router } from "./routes/router.js"
 const app = express()
 
 // Reading body inputs for post
@@ -9,7 +9,6 @@ app.use(express.urlencoded({extended: true}))
 
 // Including 1st Layer => Router
 app.use(router)
-
 
 // Launch server
 

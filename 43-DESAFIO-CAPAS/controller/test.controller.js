@@ -6,3 +6,8 @@ export function testController (req, res)  {
         res.status(200).json(sayNameAndAge(name, age))
 }
 
+export class Anibal {
+        tellMe(req, res) {
+                res.status(200).json(`Soy Anibal arará popó`)
+        }
+}
