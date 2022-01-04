@@ -1,31 +1,11 @@
-# Adonis fullstack application
+#Comandos para crear dependencia en NPM
 
-This is the fullstack boilerplate for AdonisJs, it comes pre-configured with.
+Para subir la versión usamos => npm version patch 
+(sube a una versión menor, si estaba en 0.1.1 sube a 0.1.2)
 
-1. Bodyparser
-2. Session
-3. Authentication
-4. Web security middleware
-5. CORS
-6. Edge template engine
-7. Lucid ORM
-8. Migrations and seeds
+Para publicarlo
+npm publish
 
-## Setup
+#NVM NODE VERSION MANAGER
 
-Use the adonis command to install the blueprint
-
-```bash
-adonis new yardstick
-```
-
-or manually clone the repo and then run `npm install`.
-
-
-### Migrations
-
-Run the following command to run startup migrations.
-
-```js
-adonis migration:run
-```
+Nos permite administrar varias versiones de Node en un servidor.
