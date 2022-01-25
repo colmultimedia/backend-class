@@ -20,17 +20,7 @@ router.use("/", userRouter.start())
 
 
 
-
 // Wrong routes
-
-router.post("/saris", (req, res) => {
-
-    const message = req.body.name
-
-     res.status(200).send(`Hola ${message}`)
- })
-
- 
 router.get("**",(req,res)=>{
     res.status(200).json(wrongMsgRoute)
 })

@@ -14,7 +14,7 @@ class UserRouter {
     start() {
         router.post('/signup',  UserController.signUp);
         router.post('/login', authLocal, UserController.login);
-
+        
 
         return router
     }
