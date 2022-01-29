@@ -1,4 +1,9 @@
-export const PORT =  process.argv[2] || 8080
+import dotenv from 'dotenv'
+
+dotenv.config()
+
+
+export const PORT =  process.env.SERVER_PORT || 8080
 export const JWT_SECRET = "secretpass"
 export const wrongMsgRoute = {"error":"ruta equivocada"}
 export const msgs = {

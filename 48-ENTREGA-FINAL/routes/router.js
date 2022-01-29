@@ -4,6 +4,7 @@ import { wrongMsgRoute } from "../config/constants.js"
 import  ProductRouter  from "./product.router.js";
 import MessageRouter from "./message.router.js";
 import UserRouter from "./user.router.js";
+import CartRouter from './cart.router.js'
 
 
 // Including Routers
@@ -11,11 +12,14 @@ import UserRouter from "./user.router.js";
 const productRouter = new ProductRouter
 const messageRouter = new MessageRouter
 const userRouter = new UserRouter
+const cartRouter = new CartRouter
+
 
 //we need to add user, cart, orders
 router.use("/product", productRouter.start())
 router.use("/chat", messageRouter.start())
 router.use("/", userRouter.start())
+router.use("/cart", cartRouter.start())
 
 
 
