@@ -17,5 +17,9 @@ export const msgs = {
     },
     users: {
         save: "The email that you're trying to signup is already created in our database, please try again with a different address."
+    },
+    cart: {
+        update: "The cart couldn't add the product"
     }
+    
 }
