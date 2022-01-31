@@ -21,9 +21,14 @@ export async function read (){
     }
 }
 
-export async function addCart (cart){
+export async function addCart (email){
     try{
-        
+        const cart = {
+            "email": email,
+            "order": 1,
+            "items": [],
+            "shippingAdress": "",
+        }
         const addCart = new Cart(cart)
         return await addCart.save()
         
@@ -33,9 +38,10 @@ export async function addCart (cart){
     }
 }
 
-export async function add (idProd){
+export async function add (idProd, email){
         try {
-            const idCart = "61f5b4e30112d04ef7ca0463"
+            const getCart = await Cart.findOne({email: email})
+            const idCart = getCart._id
             let product = await Product.findById(idProd)
             let cart = await Cart.findById(idCart)
             cart.items.push(product)
@@ -47,6 +53,13 @@ export async function add (idProd){
             {
                 console.error(msgs.error, err)
             }
+}
+
+export async function deleteCartItem (idProd, email) {
+    const getCart = await Cart.findOne({email: email})
+    console.log(getCart)
+
+
 }
 
 

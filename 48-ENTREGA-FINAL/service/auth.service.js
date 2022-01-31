@@ -1,51 +1,51 @@
 import passport from 'passport'
-import { Strategy as localStrategy } from 'passport-local'
+import { Strategy as LocalStrategy } from 'passport-local'
 import User from '../model/user.model.js'
+import {addCart} from './cart.service.js'
 
-import { Strategy as JWTStrategy } from 'passport-jwt'
-import {ExtractJwt as ExtractJWT } from 'passport-jwt'
 
-passport.use('signup', new localStrategy({
-    usernameField: 'email',
-    passwordField: 'password'
-}, async (email, password, done) => {
-    try {
-        const user = await User.create({ email, password })
-        return done(null, user)
-    } catch (e) {
-        done(e)
-    }
-}))
 
-passport.use('login', new localStrategy({
+passport.serializeUser((user, done) => {
+    done(null, user)
+})
+
+passport.deserializeUser(function (id, done) {
+    return done(null, id)
+})
+
+passport.use('local-signin', new LocalStrategy({
     usernameField: 'email',
     passwordField: 'password',
-}, async (email, password, done) => {
-    try {
-        const user = await User.findOne({ email })
-        if (!user) {
-            return done(null, false, { message: 'User not found' })
-        }
-
-        const validate = await user.isValidPassword(password)
-
-        if (!validate) {
-            return done(null, false, { message: 'Wrong password' })
-        }
-
-        return done(null, user, { message: 'Login successfull' })
-    } catch (e) {
-        return done(e)
+    passReqToCallback: true
+}, async (req, email, password, done) => {
+    const user = await User.findOne({ email: email })
+    if (!user) {
+        return done(null, false)
     }
+    if (!user.comparePassword(password)) {
+        return done(null, false)
+    }
+    done(null, user)
 }))
 
-passport.use(new JWTStrategy({
-    secretOrKey: 'top_secret',
-    jwtFromRequest: ExtractJWT.fromUrlQueryParameter('secret_token')
-}, async (token, done) => {
-    try {
-        return done(null, token.user)
-    } catch (e) {
-        done(error)
+passport.use('local-signup', new LocalStrategy({
+    usernameField: 'email',
+    passwordField: 'password',
+    passReqToCallback: true
+}, async (req, email, password, done) => {
+    const user = await User.findOne({ email: email })
+    if (user) {
+        return done(null, false)
+    } else {
+        const newUser = new User()
+        newUser.email = email
+        newUser.password = newUser.encryptPassword(password)
+        newUser.address = req.body.address;
+        newUser.age = req.body.age;
+        newUser.prefix = req.body.prefix;
+        newUser.telephone = req.body.telephone;
+        await newUser.save()
+        done(null, newUser)
+        addCart(email)
     }
 }))

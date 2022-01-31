@@ -1,7 +1,6 @@
 import mongoose from 'mongoose'
 
-const Cart = new mongoose.Schema({
-    //order, email, date, items array, shippingAdress
+const Order = new mongoose.Schema({
 
     date: {
         type: Date,
@@ -22,8 +21,12 @@ const Cart = new mongoose.Schema({
     shippingAddress: {
         type: String,
         required: false
+    },
+    status: {
+        type: String,
+        required: false
     }
 })
 
 
-export default mongoose.model('Cart', Cart)
+export default mongoose.model('Order', Order)

@@ -1,11 +1,12 @@
 import mongoose from "mongoose"
+import bcrypt from 'bcrypt'
 
 const User = new mongoose.Schema({
     date: {
         type: Date,
         default: Date.now
     },
-    username: {
+    email: {
         type: String,
         required: true
     },
@@ -15,11 +16,11 @@ const User = new mongoose.Schema({
     },
     name:{
         type: String,
-        required: true
+        required: false
     },
     lastname:{
         type: String,
-        required: true
+        required: false
     },
     address: {
         type: String,
@@ -30,6 +31,15 @@ const User = new mongoose.Schema({
         required: false
     }
 })
+
+//Metodos Schema
+User.methods.encryptPassword = (password) => {
+    return bcrypt.hashSync(password, bcrypt.genSaltSync(10))
+}
+
+User.methods.comparePassword = function (password) {
+    return bcrypt.compareSync(password, this.password)
+}
 
 
 export default mongoose.model('User', User)
