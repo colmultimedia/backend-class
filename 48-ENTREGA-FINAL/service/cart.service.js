@@ -5,14 +5,14 @@ import Product from '../model/product.model.js'
 
  // for methods read, add, make and delete
 
-export async function read (){
+export async function read (email){
     try {
-        const cart =  await Cart.find()
-        console.log(cart)
-        if(cart == {}){
+        const cart =  await Cart.findOne({email: email})
+        if(cart.items.length == 0){
             return {"msg": "No hay productos disponibles"}
         } else{
             return cart
+        
         }
 
     }
@@ -44,7 +44,19 @@ export async function add (idProd, email){
             const idCart = getCart._id
             let product = await Product.findById(idProd)
             let cart = await Cart.findById(idCart)
-            cart.items.push(product)
+            const filterProduct = getCart.items.find(element => element._id == idProd)
+        
+            if(filterProduct == undefined){
+                console.log("no existe el producto en el carrito")
+                cart.items.push(product)
+            }else{
+                const indexProd = cart.items.map(function(e) {
+                
+                    return e._id.toString()
+    
+                }).indexOf(idProd)
+                cart.items[indexProd].qty += 1
+            }
             await Cart.updateOne({_id: idCart}, cart)
             const cartUpdated = await Cart.findById(idCart)
             return cartUpdated
@@ -55,9 +67,11 @@ export async function add (idProd, email){
             }
 }
 
-export async function deleteCartItem (idProd, email) {
+export async function deleteCartItem (email) {
     const getCart = await Cart.findOne({email: email})
-    console.log(getCart)
+    getCart.items = []
+   await Cart.updateOne({_id: getCart._id}, getCart)
+   return await Cart.findOne({email: email})
 
 
 }

@@ -10,12 +10,12 @@ const Order = new mongoose.Schema({
         type: String,
         required: true
     },
-    order: {
-        type: Number,
-        required: false
-    },
     items: {
         type: Array,
+        required: false
+    },
+    fromCart: {
+        type: String,
         required: false
     },
     shippingAddress: {

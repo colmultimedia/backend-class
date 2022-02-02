@@ -12,6 +12,7 @@ class MessageRouter {
     start() {
         router.post("/", this.messageController.send)
         router.get("/:email", this.messageController.find)
+        router.get("/", this.messageController.chat)
         
 
         return router

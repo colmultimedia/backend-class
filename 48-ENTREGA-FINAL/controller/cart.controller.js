@@ -2,8 +2,8 @@ import {read, addCart, add, deleteCartItem} from '../service/cart.service.js'
 
 class CartController {
  // for methods read, add, make and delete
-    read (req, res) {
-        res.status(200).json(read)
+    async read (req, res) {
+        res.status(200).json(await read(req.user.email))
     }
 
     async add(req, res) {
@@ -19,7 +19,7 @@ class CartController {
     }
 
     async deleteCart(req, res) {
-        res.status(200).json(await deleteCartItem(req.params.id, req.user.email))
+        res.status(200).json(await deleteCartItem(req.user.email))
     }
 
 }

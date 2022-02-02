@@ -9,6 +9,10 @@ class MessageController {
         res.send("en construcción")
     }
 
+    chat (req, res) {
+        res.render("chat")
+    }
+
 }
 
 export default MessageController

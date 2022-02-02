@@ -11,10 +11,9 @@ class CartRouter {
 
     start() {
         router.get("/", this.cartController.read)
-        router.post("/add", this.cartController.addCart)
-        router.post("/:id", this.cartController.add)
+        router.get("/:id", this.cartController.add)
         // router.get("/make-order", this.cartController.make)
-        router.delete("/:id", this.cartController.deleteCart)
+        router.delete("/", this.cartController.deleteCart)
 
         return router
     }

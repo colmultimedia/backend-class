@@ -27,9 +27,9 @@ router.post('/signup', passport.authenticate('local-signup', {
   passReqToCallback: true
 }))
 
-router.get('/signin', (req, res, next) => {
+router.get('/login', (req, res, next) => {
   res.render('signin', {
-      title: 'Sign In',
+      title: 'Login',
   })
 
   // transporter.sendMail(mailOptions, (err, info) => {

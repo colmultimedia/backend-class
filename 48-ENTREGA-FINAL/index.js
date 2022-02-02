@@ -10,6 +10,10 @@ import morgan from "morgan";
 import { PORT } from "./config/constants.js"
 import { router } from "./routes/router.js"
 import cors from 'cors'
+import { createServer } from "http"
+import { Server } from "socket.io";
+import moment from "moment";
+
 const app = express()
 
 
@@ -24,7 +28,9 @@ app.use(cors());
 app.set('views', './views');
 app.set('view engine', 'ejs');
 
+app.use(express.static("public"));
 
+// session
 app.use(session({
     store: MongoStore.create({
         mongoUrl: process.env.MONGO_URL,
@@ -58,6 +64,47 @@ app.use((req, res, next) => {
 app.use(router)
 // Launch server
 
-const server = app.listen(PORT, function () {
-    console.log(`You're running the server on http://localhost:${server.address().port}`)
+
+// Socket
+var date = new Date()
+var dateConverted = moment(date).format('lll');
+// var mensajes = [{
+//   email: "mattheuv.osorio@geometry.com",
+//   date: dateConverted,
+//   opinion: "holi"
+// }];
+
+import { saveMessage, readMessage } from "./service/message.service.js";
+
+// saveMessage({email: "perez@gmail.com", opinion: "no body here"})
+
+
+
+const httpServer = createServer(app)
+const io = new Server(httpServer, {
+
 })
+        io.on("connection", function (socket) {
+          console.log("Alguien se ha conectado con Sockets");
+          async () => {
+              socket.emit("mensajes", await readMessage());
+          }
+          
+          socket.on("new-mensaje", function(data){
+            saveMessage(data)
+            async () => {
+                socket.emit("mensajes", await readMessage());
+                io.sockets.emit("mensajes",await readMessage());
+            }
+          });
+        });
+
+
+httpServer.listen(process.env.SOCKET_PORT, function(){
+    console.log(`You're running socket server on http://localhost:${process.env.SOCKET_PORT}`)
+})
+
+
+// const server = app.listen(PORT, function () {
+//     console.log(`You're running the server on http://localhost:${server.address().port}`)
+// })
